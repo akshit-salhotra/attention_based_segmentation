@@ -1,0 +1,14 @@
+inferencing: 2380.jpg
+check the gt of this image 
+
+model has confusion segmenting in 5m but it seems to work well in some cases 
+model has confusion segmenting when there is disturbance in ir data (like some sort of fire in background data)  
+
+
+how about letting the model decide if the ir data is good enough?
+
+inferencing: 3272.jpg
+look what the model did ?
+
+inferencing: 6640s.jpg
+inferencing: 7066.jpg
