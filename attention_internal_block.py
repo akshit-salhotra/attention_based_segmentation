@@ -691,5 +691,5 @@ class Attention_U2NETP(nn.Module):
 
 
 if __name__=='__main__':
-    model=U2NETP(out_ch=7).to('cuda')
+    model=Attention_U2NETP(out_ch=7).to('cuda')
     summary(model,(4,300,300),1)

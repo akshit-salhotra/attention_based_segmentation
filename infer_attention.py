@@ -28,10 +28,10 @@ def main():
 
     # --------- 2. dataloader ---------
     #1. dataloader
-    device = "cuda"
-    model_dir="weights/weights_attention(external +internal) mid dim of internal lesser/attention_bce_itr_19600_train_0.000165_0.009389.pth"
-    rgb_dir = "data/input_data_body_ir/rgb"
-    ir_dir="data/input_data_body_ir/ir"
+    device = "cpu"
+    model_dir="best_weights/weights_attention(external +internal) mid dim of internal lesser/attention_bce_itr_20200_train_0.000162_0.013358.pth"
+    rgb_dir = "data/test_attention/rgb"
+    ir_dir="data/test_attention/ir"
     mask_dir='final_json'
     resize=300
     # prediction_dir = "predict"
