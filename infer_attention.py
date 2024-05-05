@@ -20,6 +20,7 @@ from attention_internal_block import Attention_U2NETP
 import cv2
 from matplotlib import pyplot as plt
 from torch.utils.tensorboard import SummaryWriter
+
 def main():
 
     # --------- 1. get image path and name ---------
@@ -55,7 +56,7 @@ def main():
     # print("...load U2NET---173.6 MB")
     # net = UU2NET()
     # net=U2NETP(out_ch=6)
-    net=Attention_U2NETP(out_ch=6)
+    net=Attention_U2NETP(out_ch=6,attention_weights_flag=1)
 
     if device == "cuda":
         net.load_state_dict(torch.load(model_dir))
@@ -81,7 +82,29 @@ def main():
             inputs_test = Variable(inputs_test)
             # gray_test = Variable(gray_test)
 
-        d0 = net(inputs_test)
+        d0,a1,a2,a3,a4,a5= net(inputs_test)
+        a1=np.squeeze(a1.cpu().data.numpy())
+        a2=cv2.resize(np.squeeze(a2.cpu().data.numpy()),(resize,resize),interpolation=cv2.INTER_CUBIC)
+        a3=cv2.resize(np.squeeze(a3.cpu().data.numpy()),(resize,resize),interpolation=cv2.INTER_CUBIC)
+        a4=cv2.resize(np.squeeze(a4.cpu().data.numpy()),(resize,resize),interpolation=cv2.INTER_CUBIC)
+        a5=cv2.resize(np.squeeze(a5.cpu().data.numpy()),(resize,resize),interpolation=cv2.INTER_CUBIC)
+        
+        a1=(((a1-np.min(a1))/(np.min(a1)-np.max(a1)))*255).astype(np.uint8)
+        a2=(((a2-np.min(a2))/(np.min(a2)-np.max(a2)))*255).astype(np.uint8)
+        a3=(((a3-np.min(a3))/(np.min(a3)-np.max(a3)))*255).astype(np.uint8)
+        a4=(((a4-np.min(a4))/(np.min(a4)-np.max(a4)))*255).astype(np.uint8)
+        a5=(((a5-np.min(a5))/(np.min(a5)-np.max(a5)))*255).astype(np.uint8)
+        
+        # print(f'unique values in greyscale {np.unique((((a1-np.min(a1))/(np.min(a1)-np.max(a1))*255).astype(np.uint8)))}')
+        # cv2.imshow('greyscale',(((a1-np.min(a1))/(np.min(a1)-np.max(a1)))*255).astype(np.uint8))
+        # a1= cv2.applyColorMap((((a1-np.min(a1))/np.max(a1))*255).astype(np.uint8), cv2.COLORMAP_HOT)
+        # # print(f'the values of heat map {a1}')
+        # a2= cv2.applyColorMap((a1*255).astype(np.uint8), cv2.COLORMAP_HOT)
+        # a3= cv2.applyColorMap((a3*255).astype(np.uint8), cv2.COLORMAP_HOT)
+        # a4= cv2.applyColorMap((a4*255).astype(np.uint8), cv2.COLORMAP_HOT)
+        # a5= cv2.applyColorMap((a5*255).astype(np.uint8), cv2.COLORMAP_HOT)
+
+
 
         # normalization
         predict_np = (d0.cpu())
@@ -143,7 +166,10 @@ def main():
         ir_img=cv2.cvtColor(ir_img,cv2.COLOR_RGB2BGR)
         rgb_img=cv2.cvtColor(rgb_img,cv2.COLOR_RGB2BGR)
         stacked=cv2.hconcat([mask_visualize,ir_img,rgb_img])
+        heatmap=cv2.hconcat([a1,a2,a3,a4,a5])
+        
         cv2.imshow('output',stacked)
+        cv2.imshow('attention heat maps',heatmap)
         key=cv2.waitKey(1)
         if key==ord('q'):
             cv2.destroyAllWindows()

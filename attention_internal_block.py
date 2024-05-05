@@ -550,10 +550,11 @@ class U2NET(nn.Module):
 ### U^2-Net small ###
 class Attention_U2NETP(nn.Module):
 
-    def __init__(self,in_ch=3,out_ch=1,upsample_flag=1):
+    def __init__(self,in_ch=3,out_ch=1,upsample_flag=1,attention_weights_flag=0):
         super(Attention_U2NETP,self).__init__()
         self.pool=nn.MaxPool2d(2,2)
         self.flag=upsample_flag
+        self.attention_flag=attention_weights_flag
 
         self.stage1 = RSU7(in_ch,16,64)
         self.pool12 = nn.MaxPool2d(2,stride=2,ceil_mode=True)
@@ -686,7 +687,11 @@ class Attention_U2NETP(nn.Module):
         d0 = self.outconv(torch.cat((d1,d2,d3,d4,d5,d6),1))
 
         # return F.sigmoid(d0), F.sigmoid(d1), F.sigmoid(d2), F.sigmoid(d3), F.sigmoid(d4), F.sigmoid(d5), F.sigmoid(d6)
-        return d0
+        if self.attention_flag:
+            return d0,a1,a2,a3,a4,a5
+        else:
+            
+            return d0
 
 
 
