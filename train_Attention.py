@@ -22,8 +22,9 @@ from dataloader_attention import HumanDataset_IR
 from dataloader_attention import RandomFlip
 
 # from models import UU2NET
-from attention_model import U2NETP
+# from attention_model import U2NETP
 from attention_internal_block import Attention_U2NETP
+from attention_local import U2NETP
 temp_loss = 0
 CE_loss = nn.CrossEntropyLoss()
 def train(args):
@@ -52,7 +53,8 @@ def train(args):
     human_dataloader = DataLoader(human_dataset, batch_size=batch_size_train, shuffle=True, num_workers=1)
 
     # net = U2NETP(out_ch=6)
-    net = Attention_U2NETP(out_ch=6)
+    # net = Attention_U2NETP(out_ch=6)
+    net = U2NETP(out_ch=6)
     if torch.cuda.is_available():
         net.cuda()
 
@@ -129,7 +131,7 @@ def get_model(args):
         model_path = os.path.join(os.getcwd(), f"{args.model}")
         # model_dict = torch.load(model_path)
     # net = U2NETP(out_ch=6).to(device)
-    net = Attention_U2NETP(out_ch=6).to(device)
+    net = U2NETP(out_ch=6).to(device)
     optimizer = optim.Adam(net.parameters(), lr=0.001, betas=(0.9, 0.999), eps=1e-08, weight_decay=0)
     if args.model:
     #     net.load_state_dict(model_dict)
