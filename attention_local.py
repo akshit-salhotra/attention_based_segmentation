@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from torchsummary import summary
-
+from attention_function import attention_local
 class IR_Attention(nn.Module):
     def __init__(self,in_ch=1,mid_dim=16,out_ch=1):
         super(IR_Attention,self).__init__()
@@ -524,27 +524,32 @@ class U2NETP(nn.Module):
 
         #decoder
 
-        a5=self.attention(ir5)
+        # a5=self.attention(ir5)
+        a5=attention_local(ir5)
         hx5=hx5*a5
         hx5d = self.stage5d(torch.cat((hx6up,hx5),1))
         hx5dup = _upsample_like(hx5d,hx4)
 
-        a4=self.attention(ir4)
+        # a4=self.attention(ir4)
+        a4=attention_local(ir4)
         hx4=hx4*a4
         hx4d = self.stage4d(torch.cat((hx5dup,hx4),1))
         hx4dup = _upsample_like(hx4d,hx3)
         
-        a3=self.attention(ir3)
+        # a3=self.attention(ir3)
+        a3=attention_local(ir3)
         hx3=hx3*a3
         hx3d = self.stage3d(torch.cat((hx4dup,hx3),1))
         hx3dup = _upsample_like(hx3d,hx2)
             
-        a2=self.attention(ir2)
+        # a2=self.attention(ir2)
+        a2=attention_local(ir2)
         hx2=hx2*a2
         hx2d = self.stage2d(torch.cat((hx3dup,hx2),1))
         hx2dup = _upsample_like(hx2d,hx1)
         
-        a1=self.attention(ir)
+        # a1=self.attention(ir)
+        a1=attention_local(ir)
         hx1=hx1*a1
         hx1d = self.stage1d(torch.cat((hx2dup,hx1),1))
 

@@ -31,8 +31,8 @@ def main():
     #1. dataloader
     device = "cpu"
     model_dir="best_weights/weights_attention(external +internal) mid dim of internal lesser/attention_bce_itr_20200_train_0.000162_0.013358.pth"
-    rgb_dir = "data/test_attention/rgb"
-    ir_dir="data/test_attention/ir"
+    rgb_dir = "data/input_data_body_ir/rgb"
+    ir_dir="data/input_data_body_ir/ir"
     mask_dir='final_json'
     resize=300
     # prediction_dir = "predict"
@@ -170,7 +170,7 @@ def main():
         
         cv2.imshow('output',stacked)
         cv2.imshow('attention heat maps',heatmap)
-        key=cv2.waitKey(1)
+        key=cv2.waitKey(0)
         if key==ord('q'):
             cv2.destroyAllWindows()
             break
