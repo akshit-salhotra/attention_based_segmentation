@@ -484,6 +484,8 @@ class U2NETP(nn.Module):
         # print(x.shape)
         # print(len(torch.split(x,3),dim=1))
         
+        # print(x.shape)
+        # print(len(torch.split(x,3),dim=1))
         x,ir=torch.split(x,3,dim=1)
 
         hx = x

@@ -575,5 +575,6 @@ class U2NETP(nn.Module):
 
 
 if __name__=='__main__':
-    model=U2NETP(out_ch=7).to('cuda')
-    summary(model,(4,300,300),1)
+    model=U2NETP(out_ch=7).to('cpu')
+    # model=U2NETP(out_ch=7)
+    summary(model,(4,300,300),1,device='cpu')

@@ -16,7 +16,7 @@ from dataloader_attention import ToTensor_withoutmask
 from dataloader_attention import HumanDataset_IR_withoutmask
 from models import UU2NET # full size version 173.6 MB
 from attention_model import U2NETP
-from attention_internal_block import Attention_U2NETP
+# from attention_internal_block import Attention_U2NETP
 import cv2
 from matplotlib import pyplot as plt
 from torch.utils.tensorboard import SummaryWriter
@@ -57,14 +57,14 @@ def main():
 
     # --------- 2. dataloader ---------
     #1. dataloader
-    device = "cuda"
+    device = "cpu"
     # model_dir = "weights/attention_bce_itr_12600_train_0.000344_0.018050.pth"
-    model_dir="weights/attention_bce_itr_19600_train_0.000165_0.009389.pth"
+    model_dir="best_weights/weights_attention(external only)_class 6 (body)/attention_bce_itr_12600_train_0.000344_0.018050.pth"
     # dataset_dir = "rgb"
-    dataset_dir = "input_data_body_ir/rgb"
+    dataset_dir = "data/input_data_body_ir/rgb"
     
     # ir_dir="ir"
-    ir_dir="input_data_body_ir/ir"
+    ir_dir="data/input_data_body_ir/ir"
     mask_dir='final_json'
     prediction_dir = "predict"
     os.makedirs(prediction_dir, exist_ok=True)
@@ -87,7 +87,7 @@ def main():
     # print("...load U2NET---173.6 MB")
     # net = UU2NET()
     # net=U2NETP(out_ch=6)
-    net=Attention_U2NETP(out_ch=6)
+    net=U2NETP(out_ch=6)
 
     if device == "cuda":
         net.load_state_dict(torch.load(model_dir))
