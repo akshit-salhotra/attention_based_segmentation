@@ -37,7 +37,7 @@ def train(args):
     model_name = 'attention'
     model_dir = os.getcwd()+'/'
     # dataset_dir = os.path.join(os.getcwd(), "crack_dataset")
-    dataset_dir = "input_data_body_ir"
+    dataset_dir = "data/input_data_body_ir"
     # paths = {"img_path":os.path.join(dataset_dir, "images"), "mask_path": os.path.join(dataset_dir, "masks")}
     paths = {"img_path":dataset_dir+os.sep+'rgb',"ir_path":dataset_dir+os.sep+'ir', "mask_path":dataset_dir+os.sep+'json'}
     human_dataset = HumanDataset_IR(
