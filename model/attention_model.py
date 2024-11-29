@@ -167,7 +167,6 @@ class RSU6(nn.Module):#UNet06DRES(nn.Module):
 
         hx6 = self.rebnconv6(hx5)
 
-
         hx5d =  self.rebnconv5d(torch.cat((hx6,hx5),1))
         hx5dup = _upsample_like(hx5d,hx4)
 

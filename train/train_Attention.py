@@ -16,15 +16,14 @@ import glob
 import os
 import argparse
 
-from dataloader_attention import Rescale
-from dataloader_attention import ToTensor
-from dataloader_attention import HumanDataset_IR
-from dataloader_attention import RandomFlip
+from dataloader.dataloader_attention import Rescale
+from dataloader.dataloader_attention import ToTensor
+from dataloader.dataloader_attention import HumanDataset_IR
+from dataloader.dataloader_attention import RandomFlip
 
 # from models import UU2NET
 # from attention_model import U2NETP
-from attention_internal_block import Attention_U2NETP
-from attention_local import U2NETP
+from model.attention_internal_block import Attention_U2NETP
 temp_loss = 0
 CE_loss = nn.CrossEntropyLoss()
 def train(args):
@@ -54,7 +53,7 @@ def train(args):
 
     # net = U2NETP(out_ch=6)
     # net = Attention_U2NETP(out_ch=6)
-    net = U2NETP(out_ch=6)
+    net = Attention_U2NETP(out_ch=6)
     if torch.cuda.is_available():
         net.cuda()
 

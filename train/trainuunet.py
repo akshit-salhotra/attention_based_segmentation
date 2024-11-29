@@ -16,12 +16,12 @@ import glob
 import os
 import argparse
 
-from dataloader_ir import Rescale
-from dataloader_ir import ToTensor
-from dataloader_ir import HumanDataset_IR
-from dataloader_ir import RandomFlip
+from dataloader.dataloader import Rescale
+from dataloader.dataloader import ToTensor
+from dataloader.dataloader import HumanDataset
+from dataloader.dataloader import RandomFlip
 
-from models import UU2NET
+from model.models import UU2NET
 temp_loss = 0
 CE_loss = nn.CrossEntropyLoss()
 def train(args):
@@ -34,18 +34,18 @@ def train(args):
     model_name = 'uu2net'
     model_dir = os.getcwd()+'/'
     # dataset_dir = os.path.join(os.getcwd(), "crack_dataset")
-    dataset_dir = "input_images_body"
+    dataset_dir = ""
     # paths = {"img_path":os.path.join(dataset_dir, "images"), "mask_path": os.path.join(dataset_dir, "masks")}
-    paths = {"img_path":dataset_dir+os.sep+'rgb',"ir_path":dataset_dir+os.sep+'ir', "mask_path":dataset_dir+os.sep+'json'}
-    human_dataset = HumanDataset_IR(
+    paths = {"img_path":'final_images', "mask_path": 'final_json'}
+    human_dataset = HumanDataset(
         img_path = paths['img_path'],
-        ir_path=paths['ir_path'],
         mask_path = paths['mask_path'],
         transforms = transforms.Compose([
             Rescale(300),
             RandomFlip(),
             ToTensor(flag = 0)
         ]))
+    
     print(len(human_dataset))
     human_dataloader = DataLoader(human_dataset, batch_size=batch_size_train, shuffle=True, num_workers=1)
 
@@ -57,20 +57,17 @@ def train(args):
     net, optimizer = get_model(args)
     # ------- 5. training process --------
     print("---start training...")
-    ite_num =2000#starting iteration
+    ite_num =68000#starting iteration
     running_loss = 0 #starting iteration
     save_frq = 1000 # save the model every 2000 iterations
 
     for epoch in range(1, epoch_num):
         net.train()
-        # print(epoch)
 
         for i, data in enumerate(human_dataloader):
             ite_num = ite_num + 1
 
             inputs, labels = data['image'], data['mask']
-            # print(inputs.shape)
-            # print(labels.shape)
 
             inputs = inputs.type(torch.FloatTensor)
             labels = labels.long()
@@ -87,7 +84,6 @@ def train(args):
 
             # forward + backward + optimize
             d0 = net(inputs_v)
-            
             loss = CE_loss(d0, labels_v)
             temp_loss = loss
             writer.add_scalar('Loss/train', loss.data.item(), ite_num)
@@ -114,7 +110,7 @@ def train(args):
 def parse_args():
     parser = argparse.ArgumentParser(description = 'UU2NET')
     parser.add_argument(
-        '--model', type = str, default= 'weights/uu2net_bce_itr_3000_train_0.452414_1.219511.pth', #model name
+        '--model', type = str, default= None, #model name
         help = 'model to be retrained'
     )
     args = parser.parse_args()
@@ -124,15 +120,13 @@ def get_model(args):
     device = "cuda" if torch.cuda.is_available() else "cpu"
     if args.model:
         model_path = os.path.join(os.getcwd(), f"{args.model}")
-        # model_dict = torch.load(model_path)
+        model_dict = torch.load(model_path)
     net = UU2NET().to(device)
     optimizer = optim.Adam(net.parameters(), lr=0.001, betas=(0.9, 0.999), eps=1e-08, weight_decay=0)
     if args.model:
-    #     net.load_state_dict(model_dict)
-    #     optimizer.load_state_dict(optimizer.state_dict())
+        net.load_state_dict(model_dict)
+        optimizer.load_state_dict(optimizer.state_dict())
         print(f"{args.model} successfully loaded")
-    print("-----testing------")
-
     return net, optimizer
 
 if __name__ == "__main__":

@@ -18,10 +18,10 @@ import glob
 import os
 import argparse
 
-from dataloader import Rescale
-from dataloader import ToTensor
-from dataloader import CrackDataset
-from dataloader import RandomFlip
+from dataloader.dataloader import Rescale
+from dataloader.dataloader import ToTensor
+from dataloader.dataloader import CrackDataset
+from dataloader.dataloader import RandomFlip
 
 from u2net_withoutd9 import UU2NET
 

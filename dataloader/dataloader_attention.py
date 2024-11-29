@@ -9,7 +9,7 @@ import torch
 from torchvision import transforms
 import copy
 import cv2
-from json_preprocess import json_process
+from utils.json_preprocess import json_process
 def crop_and_resize_frame(frame, width=1440, height=810):
     # Calculate starting coordinates for cropping
     x_center = frame.shape[1] // 2  # x-coordinate of the center

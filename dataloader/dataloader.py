@@ -8,7 +8,7 @@ import random
 import torch
 from torchvision import transforms
 import copy
-from json_preprocess import json_process
+from utils.json_preprocess import json_process
 class HumanDataset(Dataset): 
     def __init__(self, img_path, mask_path, transforms = None):
         self.paths = {"img":img_path, "mask":mask_path}

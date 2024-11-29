@@ -15,7 +15,7 @@ import glob
 from dataloader import Rescale_akshit
 from dataloader import ToTensor_akshit
 from dataloader import HumanDataset_akshit
-from models import UU2NET # full size version 173.6 MB
+from model.models import UU2NET # full size version 173.6 MB
 import cv2
 from matplotlib import pyplot as plt
 from torch.utils.tensorboard import SummaryWriter

@@ -11,12 +11,12 @@ from torchvision import transforms#, utils
 import numpy as np
 from PIL import Image
 import glob
-from dataloader_attention import Rescale_withoutmask
-from dataloader_attention import ToTensor_withoutmask
-from dataloader_attention import HumanDataset_IR_withoutmask
-from models import UU2NET # full size version 173.6 MB
-from attention_model import U2NETP
-from attention_internal_block import Attention_U2NETP
+from dataloader.dataloader_attention import Rescale_withoutmask
+from dataloader.dataloader_attention import ToTensor_withoutmask
+from dataloader.dataloader_attention import HumanDataset_IR_withoutmask
+from model.models import UU2NET # full size version 173.6 MB
+from model.attention_model import U2NETP
+from model.attention_internal_block import Attention_U2NETP
 import cv2
 from matplotlib import pyplot as plt
 from torch.utils.tensorboard import SummaryWriter

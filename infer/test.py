@@ -11,10 +11,10 @@ from torchvision import transforms#, utils
 import numpy as np
 from PIL import Image
 import glob
-from dataloader_ir import Rescale_withoutmask
-from dataloader_ir import ToTensor_withoutmask
-from dataloader_ir import HumanDataset_IR_withoutmask
-from models import UU2NET # full size version 173.6 MB
+from dataloader.dataloader import Rescale_akshit
+from dataloader.dataloader import ToTensor_akshit
+from dataloader.dataloader import HumanDataset_akshit
+from model.models import UU2NET # full size version 173.6 MB
 import cv2
 from matplotlib import pyplot as plt
 from torch.utils.tensorboard import SummaryWriter
@@ -22,7 +22,9 @@ from torch.utils.tensorboard import SummaryWriter
 def normPRED(d):
     ma = torch.max(d)
     mi = torch.min(d)
+
     dn = (d-mi)/(ma-mi)
+
     return dn
 
 def save_output(dataset_dir, image_name,pred,d_dir):
@@ -53,30 +55,27 @@ def main():
 
     # --------- 2. dataloader ---------
     #1. dataloader
-    device = "cuda"
-    # dataset_dir = os.path.join(os.getcwd(), "crack_dataset")
-    dataset_dir = "input_data_body_ir"
-    # paths = {"img_path":os.path.join(dataset_dir, "images"), "mask_path": os.path.join(dataset_dir, "masks")}
-    paths = {"img_path":dataset_dir+os.sep+'rgb',"ir_path":dataset_dir+os.sep+'ir', "mask_path":dataset_dir+os.sep+'json'}
-    model_dir = "weights_ir/uu2net_bce_itr_56000_train_0.018722_1.048829.pth"
+    device = "cpu"
+    model_dir = "body segmentation weights/uu2net_bce_itr_33000_train_0.038824_1.280589.pth"
+    dataset_dir = "final_images"
+    mask_dir='final_json'
     prediction_dir = "predict"
     os.makedirs(prediction_dir, exist_ok=True)
-    human_dataset = HumanDataset_IR_withoutmask(
-        img_path = paths['img_path'],
-        ir_path=paths['ir_path'],
-        # mask_path = paths['mask_path'],
+    test_salobj_dataset = HumanDataset_akshit(
+        img_path = dataset_dir ,
+        # mask_path = dataset_dir ,
         transforms = transforms.Compose([
-            Rescale_withoutmask(300),
-            ToTensor_withoutmask(flag = 0)
+            Rescale_akshit(300),
+            ToTensor_akshit(flag = 1)
         ]))
-    test_salobj_dataloader = DataLoader(human_dataset,
+    test_salobj_dataloader = DataLoader(test_salobj_dataset,
                                         batch_size=1,
                                         shuffle=False,
                                         num_workers=1)
 
     # --------- 3. model define ---------
-    img_name_list  = sorted(os.listdir(paths['img_path']))
-    print(f'number of files :{len(img_name_list)}')
+    img_name_list  = sorted(os.listdir(dataset_dir))
+    
     # print("...load U2NET---173.6 MB")
     net = UU2NET()
     
@@ -116,7 +115,6 @@ def main():
         mask_visualize = np.zeros((predict_np.shape[0],  predict_np.shape[1], 3))
 
         colors_bgr = [
-    (0,0,0),
     (255, 0, 0),     # Red
     (0, 255, 0),     # Green
     (0, 0, 255),     # Blue
@@ -140,7 +138,7 @@ def main():
 
         print(np.unique(predict_np))
         fig, ax = plt.subplots()
-        for i in range(6):
+        for i in range(8):
             mask_visualize[predict_np == i] = colors_bgr[i]
         mask_visualize = mask_visualize.astype(np.uint8)
         im = ax.imshow(mask_visualize)
